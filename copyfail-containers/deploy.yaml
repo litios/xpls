@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attacker
+  labels:
+    app: attacker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attacker
+  template:
+    metadata:
+      labels:
+        app: attacker
+    spec:
+      containers:
+        - name: attacker
+          image: attacker
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: false
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000       # use a UID that exists in the image
+            capabilities:
+              drop: ["ALL"]
+ 
+---
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: target
+  labels:
+    app: target
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: target
+  template:
+    metadata:
+      labels:
+        app: target
+    spec:
+      containers:
+        - name: target
+          image: target
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: host-data
+              mountPath: /host        # path inside the container
+      volumes:
+        - name: host-data
+          hostPath:
+            path: /     # path on the node
+            type: DirectoryOrCreate  
+
